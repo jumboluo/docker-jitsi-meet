@@ -1,11 +1,13 @@
-version: '3.5'
 
 services:
     whiteboard:
         image: jitsi/excalidraw-backend:21
+        container_name: meet-whiteboard
         restart: ${RESTART_POLICY:-unless-stopped}
         depends_on:
             - web
+        ports:
+            - 3002:80
         networks:
             meet.jitsi:
               aliases:

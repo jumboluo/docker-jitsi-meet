@@ -5,3 +5,5 @@ docker-compose.override.yml
 log-analyser/grafana
 **/.DS_Store
 **/.idea
+vosk/models/
+!vosk/models/.gitignore

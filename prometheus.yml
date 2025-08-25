@@ -1,7 +1,7 @@
 services:
   prometheus:
     image: prom/prometheus
-    container_name: prometheus
+    container_name: meet-prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     ports:

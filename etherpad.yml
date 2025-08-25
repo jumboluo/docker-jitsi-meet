@@ -1,9 +1,9 @@
-version: '3.5'
 
 services:
     # Etherpad: real-time collaborative document editing
     etherpad:
         image: etherpad/etherpad:2.0.3
+        container_name: meet-etherpad
         restart: ${RESTART_POLICY:-unless-stopped}
         environment:
             - TITLE=${ETHERPAD_TITLE:-""}
@@ -11,6 +11,8 @@ services:
             - SKIN_NAME=${ETHERPAD_SKIN_NAME:-colibris}
             - SKIN_VARIANTS=${ETHERPAD_SKIN_VARIANTS:-"super-light-toolbar super-light-editor light-background full-width-editor"}
             - SUPPRESS_ERRORS_IN_PAD_TEXT=true
+        ports:
+            - 9001:9001
         networks:
             meet.jitsi:
                 aliases:

@@ -4,7 +4,7 @@ services:
   # Log Analyser: used for setting up a log analysis system for visualization, log collection and log processing.
 
   loki:
-    container_name: loki
+    container_name: meet-loki
     image: grafana/loki:3.0.0
     command: -config.file=/conf/loki-config.yaml
     volumes:
@@ -16,7 +16,7 @@ services:
       meet.jitsi:
 
   otel-collector:
-    container_name: otel
+    container_name: meet-otel
     image: otel/opentelemetry-collector-contrib
     user: "0" # required for reading docker container logs
     volumes:

@@ -1,0 +1,75 @@
+FROM debian:bookworm-slim
+
+ARG KALDI_MKL=0
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        wget \
+        bzip2 \
+        unzip \
+        xz-utils \
+        g++  \
+        make \
+        cmake \
+        git \
+        python3 \
+        python3-dev \
+        python3-websockets \
+        python3-setuptools  \
+        python3-pip \
+        python3-wheel \
+        python3-cffi \
+        zlib1g-dev \
+        automake \
+        autoconf \
+        libtool \
+        pkg-config \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN git clone -b vosk --single-branch https://github.com/alphacep/kaldi /opt/kaldi \
+    && cd /opt/kaldi/tools \
+    && sed -i 's:status=0:exit 0:g' extras/check_dependencies.sh \
+    && sed -i 's:--enable-ngram-fsts:--enable-ngram-fsts --disable-bin:g' Makefile \
+    && make -j $(nproc) openfst cub \
+    && if [ "x$KALDI_MKL" != "x1" ] ; then \
+            extras/install_openblas_clapack.sh; \
+        else \
+            extras/install_mkl.sh; \
+        fi \
+    && cd /opt/kaldi/src \
+    && if [ "x$KALDI_MKL" != "x1" ] ; then \
+            ./configure --mathlib=OPENBLAS_CLAPACK --shared; \
+        else \
+            ./configure --mathlib=MKL --shared; \
+        fi \
+    && sed -i 's:-msse -msse2:-msse -msse2:g' kaldi.mk \
+    && sed -i 's: -O1 : -O3 :g' kaldi.mk \
+    && make -j $(nproc) online2 lm rnnlm \
+    && git clone https://github.com/alphacep/vosk-api /opt/vosk-api \
+    && cd /opt/vosk-api/src \
+    && KALDI_MKL=$KALDI_MKL KALDI_ROOT=/opt/kaldi make -j $(nproc) \
+    && cd /opt/vosk-api/python \
+    && python3 ./setup.py install \
+    && git clone https://github.com/alphacep/vosk-server /opt/vosk-server \
+    && cd /opt \
+    && rm -rf /opt/vosk-api/src/*.o \
+    && rm -rf /opt/kaldi \
+    && rm -rf /root/.cache \
+    && rm -rf /var/lib/apt/lists/*
+
+
+ENV MODEL_FILE=vosk-model-small-cn-0.22
+
+RUN mkdir /opt/vosk-model-cn \
+    && cd /opt/vosk-model-cn \
+    && wget -q http://alphacephei.com/kaldi/models/${MODEL_FILE}.zip \
+    && unzip ${MODEL_FILE}.zip \
+    && mv ${MODEL_FILE} model \
+    && rm -rf ${MODEL_FILE}.zip
+
+EXPOSE 2700
+
+WORKDIR /opt/vosk-server/websocket
+
+CMD ["python3", "./asr_server.py", "/opt/vosk-model-cn/model"]
