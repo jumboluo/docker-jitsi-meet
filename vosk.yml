@@ -10,8 +10,21 @@ services:
     working_dir: /opt/vosk-server/websocket
     # using the vosk-model-en-us-0.22-lgraph model for English
     entrypoint: ["python3", "./asr_server.py", "/opt/vosk-models/vosk-model-en-us-0.22-lgraph"]
-    ports:
-      - 2701:2700
+    expose:
+      - 2700
+    networks:
+      meet.jitsi:
+
+  vosk-zh-small:
+    image: alphacep/kaldi-vosk-server
+    container_name: meet-vosk-zh-sm
+    volumes:
+      - ./vosk/models:/opt/vosk-models
+    working_dir: /opt/vosk-server/websocket
+    # using the vosk-model-small-cn-0.22 model for Chinese
+    entrypoint: ["python3", "./asr_server.py", "/opt/vosk-models/vosk-model-small-cn-0.22"]
+    expose:
+      - 2700
     networks:
       meet.jitsi:
 
@@ -21,9 +34,9 @@ services:
     volumes:
       - ./vosk/models:/opt/vosk-models
     working_dir: /opt/vosk-server/websocket
-    # using the vosk-model-small-cn-0.22 model for Chinese
-    entrypoint: ["python3", "./asr_server.py", "/opt/vosk-models/vosk-model-small-cn-0.22"]
-    ports:
-      - 2700:2700
+    # using the vosk-model-cn-0.22 model for Chinese
+    entrypoint: ["python3", "./asr_server.py", "/opt/vosk-models/vosk-model-cn-0.22"]
+    expose:
+      - 2700
     networks:
       meet.jitsi:
