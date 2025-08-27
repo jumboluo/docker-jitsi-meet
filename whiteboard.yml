@@ -1,7 +1,7 @@
 
 services:
     whiteboard:
-        image: jitsi/excalidraw-backend:21
+        image: jitsi/excalidraw-backend:2025.8.2
         container_name: meet-whiteboard
         restart: ${RESTART_POLICY:-unless-stopped}
         depends_on:
