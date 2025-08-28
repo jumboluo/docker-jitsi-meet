@@ -11,6 +11,7 @@ services:
             - SKIN_NAME=${ETHERPAD_SKIN_NAME:-colibris}
             - SKIN_VARIANTS=${ETHERPAD_SKIN_VARIANTS:-"super-light-toolbar super-light-editor light-background full-width-editor"}
             - SUPPRESS_ERRORS_IN_PAD_TEXT=true
+            - ADMIN_PASSWORD=${ETHERPAD_ADMIN_PASSWORD:-admin}
         ports:
             - 9001:9001
         networks:
