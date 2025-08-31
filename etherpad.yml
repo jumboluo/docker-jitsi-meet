@@ -13,7 +13,7 @@ services:
             - SUPPRESS_ERRORS_IN_PAD_TEXT=true
             - ADMIN_PASSWORD=${ETHERPAD_ADMIN_PASSWORD:-admin}
         ports:
-            - 9001:9001
+            - 9002:9001
         networks:
             meet.jitsi:
                 aliases:
