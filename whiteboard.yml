@@ -10,5 +10,5 @@ services:
             - 3002:80
         networks:
             meet.jitsi:
-              aliases:
-                  - whiteboard.meet.jitsi
+                aliases:
+                    - whiteboard.meet.jitsi
